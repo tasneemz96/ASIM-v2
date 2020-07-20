@@ -6,15 +6,16 @@ import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
-import {MemoryRouter as Router} from 'react-router-dom';
-import {Link as RouterLink} from 'react-router-dom';
+import { MemoryRouter as Router } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import Image from '../images/medical-hero-signin.jpg';
+import Image from '../images/medical-hero.jpg';
+import axios from 'axios';
 // import {Link} from 'react-router-dom';
 
 function Copyright() {
@@ -64,6 +65,34 @@ const useStyles = makeStyles((theme) => ({
 export default function SignInSide() {
     const classes = useStyles();
 
+    const [email, setEmail] = React.useState('');
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
+    }
+
+    const [password, setPassword] = React.useState('');
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+    }
+
+    const handleSignInClick = (e) => {
+        e.preventDefault();
+        const User = {
+            email: email,
+            password: password
+        };
+
+        var success = false;
+
+        axios.post('http://localhost:5000/auth/login', User)
+            .then(res => {
+                console.log(res.data);
+
+            });
+
+        window.location = '/';
+    }
+
     return (
         <Grid container component="main" className={classes.root}>
             <CssBaseline />
@@ -75,20 +104,22 @@ export default function SignInSide() {
                         <LockOutlinedIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        Sign in
+                        Log in
           </Typography>
                     <form className={classes.form} noValidate>
-                            <TextField
-                                variant="standard"
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="email"
-                                label="Email Address"
-                                name="email"
-                                autoComplete="email"
-                                autoFocus
-                            />
+                        <TextField
+                            variant="standard"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="email"
+                            label="Email Address"
+                            name="email"
+                            value={email}
+                            onChange={handleEmailChange}
+                            autoComplete="email"
+                            autoFocus
+                        />
 
                         <TextField
                             variant="standard"
@@ -99,6 +130,8 @@ export default function SignInSide() {
                             label="Password"
                             type="password"
                             id="password"
+                            value={password}
+                            onChange={handlePasswordChange}
                             autoComplete="current-password"
                         />
                         <Button
@@ -106,14 +139,15 @@ export default function SignInSide() {
                             fullWidth
                             variant="contained"
                             color="primary"
+                            onClick={handleSignInClick}
                             className={classes.submit}
                         >
-                            Sign In
+                            Log In
             </Button>
                         <Grid container justify="flex-end">
                             <Grid item>
-                                <Link href='/signup' variant="body2">
-                                    {"Don't have an account? Sign Up"}
+                                <Link href='/register' variant="body2">
+                                    {"Don't have an account? Register now"}
                                 </Link>
                             </Grid>
                         </Grid>

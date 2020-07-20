@@ -16,16 +16,18 @@ router.route('/').get((req, res) => {
 // POST localhost:port/patients/register
 router.route('/register').post((req, res) => {
 
+    console.log("Register route");
+
     Patient.findOne({ email: req.body.email })
         .then((patient) => {
             if (!patient) {
+                console.log("New patient!");
                 const email = req.body.email;
                 const password = req.body.password;
                 const name = req.body.name;
                 const dob = Date.parse(req.body.dob);
                 const sex = req.body.sex;
                 const phone = Number(req.body.phone);
-                const nationality = req.body.nationality;
                 const insurance = Boolean(req.body.insurance);
                 const handicap = Boolean(req.body.handicap);
                 const diabetes = Boolean(req.body.diabetes);
@@ -41,7 +43,6 @@ router.route('/register').post((req, res) => {
                     dob,
                     sex,
                     phone,
-                    nationality,
                     insurance,
                     handicap,
                     diabetes,
@@ -53,19 +54,27 @@ router.route('/register').post((req, res) => {
                     bcrypt.hash(newPatient.password, salt, (err, hash) => {
                         if (err) throw err;
                         newPatient.password = hash;
+                        console.log(newPatient);
                         newPatient.save()
-                            .then(() => res.json('Patient added!'))
+                            .then(() => {res.json('Patient added!');
+                            console.log("Saved!");})
                             .catch(err => res.status(400).json('Error: ' + err));
+
+                       
+
                     })
                 })
 
                 // add to collection 
 
+
             }
             else {
-                res.json("Patient exists!");         
+                res.json("Patient exists!");
+                console.log("Patient exists");
             }
         })
+        .catch(err => res.status(400).json("Error: " + err));
 
 });
 
@@ -90,7 +99,6 @@ router.route('/:id').put((req, res) => {
             patient.dob = Date.parse(req.body.dob);
             patient.sex = req.body.sex;
             patient.phone = Number(req.body.phone);
-            patient.nationality = req.body.nationality;
             patient.insurance = Boolean(req.body.insurance);
             patient.handicap = Boolean(req.body.handicap);
             patient.diabetes = Boolean(req.body.diabetes);

@@ -7,8 +7,8 @@ import './App.css';
 function App() {
   return (
     <Router>
-      <Route path='/signup' component={SignUp}/>
-      <Route path='/' exact component={SignIn}/>
+      <Route path='/register' component={SignUp}/>
+      <Route path='/login' component={SignIn}/>
     </Router>
   );
 }

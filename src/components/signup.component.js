@@ -26,7 +26,8 @@ import {
     KeyboardDatePicker,
 } from '@material-ui/pickers';
 import { FormControl } from '@material-ui/core';
-import Image from '../images/medical-hero.jpg';
+import Image from '../images/medical-hero-signup.jpg';
+import axios from 'axios';
 
 function Copyright() {
     return (
@@ -50,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
     },
     overall: {
-        backgroundImage: 'url('+Image+')',
+        backgroundImage: 'url(' + Image + ')',
         backgroundSize: 'cover',
     },
     paper: {
@@ -75,7 +76,26 @@ const useStyles = makeStyles((theme) => ({
 export default function SignUp() {
     const classes = useStyles();
 
-    const [selectedDate, setSelectedDate] = React.useState(new Date());
+    const [name, setName] = React.useState('');
+
+    const handleNameChange = (event) => {
+        setName(event.target.value);
+    }
+
+    const [email, setEmail] = React.useState('');
+
+    const handleEmailChange = (event) => {
+        setEmail(event.target.value);
+    }
+
+
+    const [password, setPassword] = React.useState('');
+
+    const handlePasswordChange = (event) => {
+        setPassword(event.target.value);
+    }
+
+    const [selectedDate, setSelectedDate] = React.useState('2020-07-20');
 
     const handleDateChange = (date) => {
         setSelectedDate(date);
@@ -86,6 +106,11 @@ export default function SignUp() {
     const handleGenderChange = (event) => {
         setGender(event.target.value);
     };
+
+    const [phone, setPhone] = React.useState('');
+    const handlePhoneChange = (e) => {
+        setPhone(e.target.value);
+    }
 
     const [insurance, setInsurance] = React.useState('');
 
@@ -117,172 +142,200 @@ export default function SignUp() {
         setDiseaseName(event.target.value);
     }
 
-    const handleChangeMultiple = (event) => {
-        const { options } = event.target;
-        const value = [];
-        for (let i = 0, l = options.length; i < l; i += 1) {
-            if (options[i].selected) {
-                value.push(options[i].value);
-            }
+    const SignUpClick = (e) => {
+        e.preventDefault();
+        var hand = diseaseName.includes('Disability') ? true : false;
+        var dia = diseaseName.includes('Diabetes') ? true : false;
+        var hyp = diseaseName.includes('Hypertension') ? true : false;
+        var alc = diseaseName.includes('Alcoholism') ? true : false;
+        const newPatient = {
+            name: name,
+            email: email,
+            password: password,
+            dob: selectedDate,
+            sex: gender,
+            phone: phone,
+            insurance: insurance,
+            handicap: hand,
+            diabetes: dia,
+            hypertension: hyp,
+            alcoholism: alc
         }
-        setDiseaseName(value);
+
+        axios.post('http://localhost:5000/patients/register', newPatient)
+        .then((res) => {console.log(res.data)});
+
+        window.location = '/';
     }
 
     return (
         <Box width={1} className={classes.overall}>
-        <Container component="main" maxWidth="xs">
-            <CssBaseline />
-            <div className={classes.paper}>
-               
-                <Paper>
-                    <div className={classes.card}>
-                    <Typography component="h1" variant="h3" color="primary">ASIM</Typography>
-                    
-                <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5">
-                    Sign up
+            <Container component="main" maxWidth="xs">
+                <CssBaseline />
+                <div className={classes.paper}>
+
+                    <Paper>
+                        <div className={classes.card}>
+                            <Typography component="h1" variant="h3" color="primary">ASIM</Typography>
+
+                            <Avatar className={classes.avatar}>
+                                <LockOutlinedIcon />
+                            </Avatar>
+                            <Typography component="h1" variant="h5">
+                                Register
         </Typography>
-                <form className={classes.form} noValidate>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <TextField
-                                autoComplete="fname"
-                                name="firstName"
-                                variant="standard"
-                                required
-                                fullWidth
-                                id="firstName"
-                                label="Full Name"
-                                autoFocus
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                variant="standard"
-                                required
-                                fullWidth
-                                id="email"
-                                label="Email Address"
-                                name="email"
-                                autoComplete="email"
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                variant="standard"
-                                required
-                                fullWidth
-                                name="password"
-                                label="Password"
-                                type="password"
-                                id="password"
-                                autoComplete="current-password"
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                variant="standard"
-                                fullWidth
-                                id="date"
-                                label="Date of birth"
-                                type="date"
-                                defaultValue={new Date()}
-                                className={classes.textField}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FormControl variant="standard" fullWidth>
-                                <InputLabel id="gender">Gender</InputLabel>
-                                <Select
-                                    labelId="gender"
-                                    id="gender"
-                                    value={gender}
-                                    onChange={handleGenderChange}
-                                    label="Gender"
+                            <form className={classes.form} noValidate>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            autoComplete="fname"
+                                            name="fullName"
+                                            variant="standard"
+                                            required
+                                            fullWidth
+                                            id="fullName"
+                                            label="Full Name"
+                                            onChange={handleNameChange}
+                                            value={name}
+                                            autoFocus
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            variant="standard"
+                                            required
+                                            fullWidth
+                                            id="email"
+                                            label="Email Address"
+                                            name="email"
+                                            value={email}
+                                            onChange={handleEmailChange}
+                                            autoComplete="email"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            variant="standard"
+                                            required
+                                            fullWidth
+                                            name="password"
+                                            label="Password"
+                                            type="password"
+                                            id="password"
+                                            value={password}
+                                            onChange={handlePasswordChange}
+                                            autoComplete="current-password"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            required
+                                            variant="standard"
+                                            fullWidth
+                                            id="date"
+                                            label="Date of birth"
+                                            type="date"
+                                            defaultValue={selectedDate}
+                                            onChange={handleDateChange}
+                                            className={classes.textField}
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <FormControl variant="standard" fullWidth>
+                                            <InputLabel id="gender">Gender *</InputLabel>
+                                            <Select
+                                                required
+                                                labelId="gender"
+                                                id="gender"
+                                                defaultValue="male"
+                                                value={gender}
+                                                onChange={handleGenderChange}
+                                                label="Gender *"
+                                            >
+                                                <MenuItem value="male">Male</MenuItem>
+                                                <MenuItem value="female">Female</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            variant="standard"
+                                            required
+                                            fullWidth
+                                            name="phone"
+                                            label="Phone number"
+                                            type="text"
+                                            id="phone"
+                                            value={phone}
+                                            onChange={handlePhoneChange}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <FormControl variant="standard" fullWidth>
+                                            <InputLabel id="insurance">Insurance *</InputLabel>
+                                            <Select
+                                                required
+                                                labelId="insurance"
+                                                id="insurance"
+                                                value={insurance}
+                                                onChange={handleInsuranceChange}
+                                                label="Insurance *"
+                                            >
+                                                <MenuItem value="true">Yes, I have medical insurance</MenuItem>
+                                                <MenuItem value="false">No, I do not have medical insurance</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <FormControl variant="standard" fullWidth>
+                                            <InputLabel id="disease">Disease history *</InputLabel>
+                                            <Select
+                                                labelId="disease"
+                                                id="disease"
+                                                multiple
+                                                value={diseaseName}
+                                                onChange={handleDiseaseChange}
+                                                input={<Input />}
+                                                MenuProps={MenuProps}
+                                            >
+                                                {diseases.map((name) => (
+                                                    <MenuItem key={name} value={name}>
+                                                        {name}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                </Grid>
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={SignUpClick}
+                                    className={classes.submit}
                                 >
-                                    <MenuItem value="male">Male</MenuItem>
-                                    <MenuItem value="female">Female</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                variant="standard"
-                                required
-                                fullWidth
-                                name="phone"
-                                label="Phone number"
-                                prefix="+"
-                                type="text"
-                                id="phone"
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FormControl variant="standard" fullWidth>
-                                <InputLabel id="insurance">Insurance</InputLabel>
-                                <Select
-                                    labelId="insurance"
-                                    id="insurance"
-                                    value={insurance}
-                                    onChange={handleInsuranceChange}
-                                    label="Insurance"
-                                >
-                                    <MenuItem value="true">Yes, I have medical insurance</MenuItem>
-                                    <MenuItem value="false">No, I do not have medical insurance</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FormControl variant="standard" fullWidth>
-                                <InputLabel id="disease">Disease history</InputLabel>
-                                <Select
-                                    labelId="disease"
-                                    id="disease"
-                                    multiple
-                                    value={diseaseName}
-                                    onChange={handleDiseaseChange}
-                                    input={<Input />}
-                                    MenuProps={MenuProps}
-                                >
-                                    {diseases.map((name) => (
-                                        <MenuItem key={name} value={name}>
-                                            {name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                    >
-                        Sign Up
+                                    Register
           </Button>
-                    <Grid container justify="flex-end">
-                        <Grid item>
-                            <Link href="/" variant="body2">
-                                Already have an account? Sign in
+                                <Grid container justify="flex-end">
+                                    <Grid item>
+                                        <Link href="/login" variant="body2">
+                                            Already have an account? Log in
               </Link>
-                        </Grid>
-                        
-                    </Grid>
-                </form>
+                                    </Grid>
+
+                                </Grid>
+                            </form>
+                        </div>
+                    </Paper>
                 </div>
-                </Paper>
-            </div>
-            <Box mt={5}>
-                <Copyright />
-            </Box>
-        </Container>
+                <Box mt={5}>
+                    <Copyright />
+                </Box>
+            </Container>
         </Box>
     );
 }
