@@ -19,8 +19,7 @@
 .env.test.local
 .env.production.local
 
-/backend
-*/node_modules
+*/backend/node_modules
 /backend
 *.env
 
