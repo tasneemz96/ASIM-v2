@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SignUp() {
     const classes = useStyles();
 
-    const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
+    const [selectedDate, setSelectedDate] = React.useState(new Date());
 
     const handleDateChange = (date) => {
         setSelectedDate(date);
@@ -188,7 +188,7 @@ export default function SignUp() {
                                 id="date"
                                 label="Date of birth"
                                 type="date"
-                                defaultValue="2017-05-24"
+                                defaultValue={new Date()}
                                 className={classes.textField}
                                 InputLabelProps={{
                                     shrink: true,
